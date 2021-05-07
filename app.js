@@ -12,7 +12,10 @@
 //=======================================
 
 const CONTAINER_NAME = 'sketchfab-customiser';
-const SKETCHFAB_UID = '0901cb402a1d421f8900a8849bc3e125';
+// FBX
+//const SKETCHFAB_UID = '0901cb402a1d421f8900a8849bc3e125';
+// Blender
+const SKETCHFAB_UID = '20847769d06f47a582113b0df1c88990';
 const SKETCHFAB_IFRAME_ID = 'api-iframe';
 
 //=======================================
@@ -20,10 +23,14 @@ const SKETCHFAB_IFRAME_ID = 'api-iframe';
 //=======================================
 
 /* First populate the sketchfab-customiser with the required elements for UI and sketchfab Iframe */
-document.getElementById(CONTAINER_NAME).innerHTML =  "" +
+document.getElementById(CONTAINER_NAME).innerHTML +=
 '<div id="option-types-panel" class="no-scrollbar no-scrollbar::-webkit-scrollbar"></div>' +
-'<div id="options-panel"><button id="close-panel" onclick="UI.closeChoicePanel()"></button><div id="options-panel-content"></div></div>' +
-'<iframe id="'+ SKETCHFAB_IFRAME_ID +'" src="" style="width: 100%; height: 100%;" allow="autoplay; fullscreen; vr" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>';
+'<div id="options-panel">' + 
+    '<button id="close-panel" onclick="UI.closeChoicePanel()"></button>' +
+    '<div id="options-panel-content"></div>' +
+'</div>' +
+'<div id="filter-panel"></div>' + 
+'<iframe id="'+ SKETCHFAB_IFRAME_ID +'" src="" style="width: 100%; height: 100%; z-index: 1;" allow="autoplay; fullscreen; vr" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>';
 
 //=======================================
 // Sketchfab Client Object
@@ -118,7 +125,7 @@ var sketchfabClient = {
     },
 
     setPosition: function(myNode) {
-        sketchfabClient.api.translate(myNode, [0.0, 0.0, 1.0], {
+        sketchfabClient.api.translate(myNode, [0.0, 0.0, 0.0], {
             duration: 1.0,
             easing: 'easeOutQuad'
         }, function(err, translateTo) {
@@ -145,21 +152,29 @@ var UI = {
     load: function( /*_options*/) {
 
         this.root = sketchfabClient.scene_tree[1];
+        UI.loadOptionsPanel();
+        UI.loadFilterPanel();
+    },
 
+    loadOptionsPanel: function() {
         document.getElementById('option-types-panel').classList.add('option-types-panel-load-in');
-
-        var button_style = 'options-button';
-        
-        var controls = document.getElementById('option-types-panel');
-        var buttonsText = '';
         
         /* Will be for-eaching across all options */
-
+        var buttonsText = '';
         for(i = 0; i < this.root.children.length; i++) {
-            buttonsText += '<button class="' + button_style + '" onClick="UI.openChoicePanel(\'' + i + '\')"><div class="name-display"><span class="button-text">' + sketchfabClient.scene_root.children[i].name + '</span></div></button>';
+            buttonsText += '<button class="options-button" onClick="UI.openChoicePanel(\'' + i + '\')"><div class="name-display"><span class="button-text">' + sketchfabClient.scene_root.children[i].name + '</span></div></button>';
         }
 
-        controls.innerHTML = buttonsText;
+        document.getElementById('option-types-panel').innerHTML = buttonsText;
+    },
+
+    loadFilterPanel: function() {
+        var filterButtons = '' +
+        '<button class="options-button">normal</button>' +
+        '<button class="options-button">crazy</button>';
+
+        document.getElementById('filter-panel').innerHTML = filterButtons;
+        document.getElementById('filter-panel').classList.add('filter-panel-load-in');
     },
 
     openChoicePanel: function(_index) {
@@ -181,7 +196,7 @@ var UI = {
                 document.getElementById('options-panel').classList.remove('options-panel-hide');
                 document.getElementById('option-types-panel').classList.add('option-types-panel-shadowed');
                 document.getElementById('options-panel').classList.add('options-panel-show');
-            }, 1000);
+            }, 500);
 
         }
 
@@ -196,18 +211,14 @@ var UI = {
     },
 
     populatePanel: function(_index) {
-
-        var controls = document.getElementById('options-panel-content');
-        var buttonsText = '';
         
-        var button_style = 'options-button';
-
         /* Will be for-eaching across all options */
+        var buttonsText = '';
 
         for(i = 0; i < this.root.children[_index].children.length; i++) {
-            buttonsText += '<button class="' + button_style + '" onClick="sketchfabClient.selectObject(' + _index + ', ' + i + ')"><div class="name-display"><span class="button-text">' + sketchfabClient.scene_root.children[_index].children[i].name + '</span></div></button>';
+            buttonsText += '<button class="options-button" onClick="sketchfabClient.selectObject(' + _index + ', ' + i + ')"><div class="name-display"><span class="button-text">' + sketchfabClient.scene_root.children[_index].children[i].name + '</span></div></button>';
         }
 
-        controls.innerHTML = buttonsText;
+        document.getElementById('options-panel-content').innerHTML = buttonsText;
     },
 };

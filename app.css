@@ -14,6 +14,8 @@
     --options-panel-border-size: 5px;
     --option-types-panel-left: 50px;
     --options-panel-left: calc(var(--options-width) + (var(--option-types-panel-left) + (var(--options-panel-border-size) + (var(--options-padding) * 2))));
+    --animation-speed: .5s;
+    --filter-panel-width: calc(var(--options-width) / 2);
 }
 
 /*==========================================
@@ -56,11 +58,11 @@
 }
 
 .option-types-panel-load-in {
-    -webkit-transition: 1s;
-    -moz-transition: 1s;
-    -ms-transition: 1s;
-    -o-transition: 1s;
-    transition: 1s;
+    -webkit-transition: var(--animation-speed);
+    -moz-transition: var(--animation-speed);
+    -ms-transition: var(--animation-speed);
+    -o-transition: var(--animation-speed);
+    transition: var(--animation-speed);
     left: var(--option-types-panel-left) !important;
     opacity: 1 !important;
 }
@@ -98,21 +100,21 @@
 }
 
 .options-panel-show {
-    -webkit-transition: 1s;
-    -moz-transition: 1s;
-    -ms-transition: 1s;
-    -o-transition: 1s;
-    transition: 1s;
+    -webkit-transition: var(--animation-speed);
+    -moz-transition: var(--animation-speed);
+    -ms-transition: var(--animation-speed);
+    -o-transition: var(--animation-speed);
+    transition: var(--animation-speed);
     left: var(--options-panel-left) !important;
     opacity: 1 !important;
 }
 
 .options-panel-hide {
-    -webkit-transition: 1s;
-    -moz-transition: 1s;
-    -ms-transition: 1s;
-    -o-transition: 1s;
-    transition: 1s;
+    -webkit-transition: var(--animation-speed);
+    -moz-transition: var(--animation-speed);
+    -ms-transition: var(--animation-speed);
+    -o-transition: var(--animation-speed);
+    transition: var(--animation-speed);
     left: var(--option-types-panel-left) !important;
     opacity: 0 !important;
 }
@@ -148,4 +150,29 @@
     background-color: rgb(255, 255, 255, .5);
     height: 50%;
     border-radius: 0 0 9px 9px;
+}
+
+/*==========================================
+    Filter Panel
+==========================================*/
+
+#filter-panel {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: var(--filter-panel-width);
+    background-color: rgb(66, 66, 66);
+    padding: var(--options-padding);
+    opacity: 0;
+}
+
+.filter-panel-load-in {
+    -webkit-transition: var(--animation-speed);
+    -moz-transition: var(--animation-speed);
+    -ms-transition: var(--animation-speed);
+    -o-transition: var(--animation-speed);
+    transition: var(--animation-speed);
+    left: calc(100% - ( var(--filter-panel-width) + (var(--options-padding) * 2))) !important;
+    opacity: 1 !important;
 }
