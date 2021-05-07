@@ -1,0 +1,151 @@
+/*
+ * app.css
+ * Developed by Holt Environments
+ *
+ */
+
+/*==========================================
+    Global variables
+==========================================*/
+
+:root {
+    --options-width: 200px;
+    --options-padding: 20px;
+    --options-panel-border-size: 5px;
+    --option-types-panel-left: 50px;
+    --options-panel-left: calc(var(--options-width) + (var(--option-types-panel-left) + (var(--options-panel-border-size) + (var(--options-padding) * 2))));
+}
+
+/*==========================================
+    Sketchfab Customiser
+==========================================*/
+
+#sketchfab-customiser {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/*==========================================
+    Options Menu
+==========================================*/
+
+#option-types-panel {
+    position: absolute;
+    z-index: 10;
+    overflow-y: scroll;
+    left: 0px;
+    width: var(--options-width);
+    height: 100%;
+    background: rgba(87, 87, 87, .9);
+    padding: var(--options-padding);
+    opacity: 0;
+    border-right-width: var(--options-panel-border-size);
+    border-right-color: #00ae41;
+    border-right-style: solid;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.option-types-panel-load-in {
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+    left: var(--option-types-panel-left) !important;
+    opacity: 1 !important;
+}
+
+.option-types-panel-shadowed {
+    box-shadow: 10px 0 10px -2px rgba(0, 0, 0,.3);
+}
+
+.options-button {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-image: url("https://visiteurope.com/wp-content/uploads/placeholder-image.jpg");
+    background-size: cover;
+    border: none;
+}
+
+/*==========================================
+    Options Panel
+==========================================*/
+
+#options-panel {
+    position: absolute;
+    z-index: 5;
+    left: var(--option-types-panel-left);
+    width: var(--options-width);
+    height: 100%;
+    padding: var(--options-padding);
+    opacity: 0;
+    background: rgba(87, 87, 87, .7);
+}
+
+.options-panel-show {
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+    left: var(--options-panel-left) !important;
+    opacity: 1 !important;
+}
+
+.options-panel-hide {
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+    left: var(--option-types-panel-left) !important;
+    opacity: 0 !important;
+}
+
+.button-text {
+    font-size: 20px;
+    color: rgb(66, 66, 66);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    width: 100%;
+    position: absolute;
+}
+
+#close-panel {
+    position: absolute;
+    left: calc(var(--options-width) + (var(--options-padding) * 2) + var(--options-panel-border-size));
+    background-color:rgba(0, 0, 0, .0);
+    background-image: url('./imgs/chevron-left.svg');
+    width: 35px;
+    height: 35px;
+    background-size: cover;
+    background-position: center;
+    border: none;
+    cursor: pointer;
+}
+
+.name-display {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(255, 255, 255, .5);
+    height: 50%;
+    border-radius: 0 0 9px 9px;
+}
