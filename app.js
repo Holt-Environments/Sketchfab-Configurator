@@ -12,10 +12,13 @@
 //=======================================
 
 const CONTAINER_NAME = 'sketchfab-customiser';
-// FBX
-//const SKETCHFAB_UID = '0901cb402a1d421f8900a8849bc3e125';
-// Blender
-const SKETCHFAB_UID = '20847769d06f47a582113b0df1c88990';
+
+// Burger
+//const SKETCHFAB_UID = '20847769d06f47a582113b0df1c88990';
+
+// Grass
+const SKETCHFAB_UID = '3464d838341c4b299d89cd427065738d';
+
 const SKETCHFAB_IFRAME_ID = 'api-iframe';
 
 //=======================================
