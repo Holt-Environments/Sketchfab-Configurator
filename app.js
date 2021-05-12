@@ -11,11 +11,11 @@
 // Global Control Variables
 //=======================================
 
-// FBX
-//const SKETCHFAB_UID = '0901cb402a1d421f8900a8849bc3e125';
+// Burger
+//const SKETCHFAB_UID = '20847769d06f47a582113b0df1c88990';
 
-// Blender
-const SKETCHFAB_UID = '20847769d06f47a582113b0df1c88990';
+// Grass
+const SKETCHFAB_UID = '3464d838341c4b299d89cd427065738d';
 
 const CONTAINER_NAME = 'sketchfab-customiser';
 const SKETCHFAB_IFRAME_ID = 'api-iframe';
@@ -124,7 +124,7 @@ var sketchfabClient = {
         for(i = 0; i < sketchfabClient.scene_root.children.length; i++) {
 
             sketchfabClient.selectObject(i, sketchfabClient.scene_root.children[i].children[0].instanceID);
-            sketchfabClient.translateObject(sketchfabClient.scene_root.children[i].instanceID, [0.0, 0.0, 0.0]);
+            //sketchfabClient.translateObject(sketchfabClient.scene_root.children[i].instanceID, [0.0, 0.0, 0.0]);
         }
     },
 
