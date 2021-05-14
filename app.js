@@ -763,7 +763,7 @@ var ui = {
             console.log("ui.populatePanel: Error - Options list is empty.");
         }
     },
-
+  
     setFilter: function(event)
     {
         var filter_item = event.currentTarget;
@@ -810,3 +810,4 @@ var ui = {
 
 ui.init();
 sfc.init( document.getElementById( SKETCHFAB_IFRAME_ID ) );
+
