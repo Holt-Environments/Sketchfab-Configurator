@@ -433,7 +433,6 @@ var sfc = {
     var option = _type_object.children[_i];
  
     var option_name = sfc.getName(option).split(" ");
-    console.log(option_name);
 
     if (type_name != option_name[0])
     {
