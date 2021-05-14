@@ -1,8 +1,12 @@
 /*
- * Holt Environments
- * Anthony Mesa
+ * App: Sketchfab Picker
+ * File: app.js
+ * Date: 05/14/2021
+ *
+ * Developed by Holt Environments
+ * Contributors: Anthony Mesa
  * 
- * Custom sketchfab-customiser.
+ * This is a custom sketchfab-customiser.
  * 
  * For this script to work, the sketchfab api script must also be included
  * on the same page in which this customiser is being implemented.
@@ -16,6 +20,9 @@
  * OF THIS PROJECT'S REPO:
  * 
  * https://github.com/anthonymesa/sketchfab-picker
+ * 
+ * The objects sfc and ui are declared first, and their initialization functions
+ * are called at the bottom of this file.
  * 
  */
 
@@ -52,8 +59,10 @@ var sfc = {
 
   api: null,
   filter_root: null,
-  types: [],
+  type_objects: [],
   active_object: null,
+
+//==============================================================================
 
   /**
    * Initializes the sketchfab client, populates the scene_root, and then 
@@ -136,6 +145,8 @@ var sfc = {
     });
   },
 
+//==============================================================================
+
   /**
    * Sets the root object of the scene, whose children are type objects.
    * 
@@ -155,6 +166,8 @@ var sfc = {
       }
     }
   },
+
+//==============================================================================
 
   /**
    * Gets the scene root from the sketchfab viewer.
@@ -178,6 +191,8 @@ var sfc = {
     return scene_root;
   },
 
+//==============================================================================
+
   /**
    * Cut off the _# part of the name that sketchfab appends to every object.
    * 
@@ -190,6 +205,8 @@ var sfc = {
    {
      return _object.name.split('_')[0]
    },
+
+//==============================================================================
 
   /**
    * Sets the types list for this sketchfab object. Because the types exist
@@ -209,14 +226,15 @@ var sfc = {
     {
       var element = scene_root.children[i];
 
+      // Because '#' is the designated name for the filter object, we dont want
+      // to include this in our type list.
       if (sfc.getName(element) != "#") {
-        sfc.types.push(element);
+        sfc.type_objects.push(element);
       }
     }
-
-    console.log("sfc.setTypes - Types:");
-    console.log(sfc.types);
   },
+
+//==============================================================================
 
   /**
    * This function is responsible for making sure that on load, only the 
@@ -228,19 +246,16 @@ var sfc = {
    */
   setInitialObjectsVisible: function()
   {
-    console.log("sfc.setInitialObjectsVisible - types length = " +
-      sfc.types.length);
-
-    for(let i = 0; i < sfc.types.length; i++)
+    for(let i = 0; i < sfc.type_objects.length; i++)
     {
-      console.log("sfc.setInitialObjectsVisible - setting " + i);
-
-      var type_object = sfc.types[i];
+      var type_object = sfc.type_objects[i];
       var initial_option_object= type_object.children[0];
       
       sfc.showObject( type_object, initial_option_object );
     }
   },
+
+//==============================================================================
 
   /**
    * Given a type and an object that is a child of said type, show the object
@@ -270,12 +285,15 @@ var sfc = {
       if (object_id == curr_id)
       {
         sfc.api.show(object_id);
-      } else
+      }
+      else
       {
         sfc.api.hide(curr_id);
       }
     }
   },
+
+//==============================================================================
 
   /**
    * Transforms the object represented by _myNode using the translation
@@ -313,9 +331,14 @@ var sfc = {
     );
   },
 
+//==============================================================================
+
   /**
    * Creates a dictionary object with key/value pairs of type-object names and
    * the objects themselves.
+   * 
+   * When getting the types from sfc, this would be the desired option to get
+   * them because sfc.type_objects are just the objects alone.
    * 
    * @returns Object with key value pairs of type names and their 3d object
    * id counterpart.
@@ -324,15 +347,10 @@ var sfc = {
   {
     var types = {};
 
-    for(let i = 0; i < sfc.types.length; i++)
+    for(let i = 0; i < sfc.type_objects.length; i++)
     {
-      if(sfc.types[i].name.split('_')[0] == "#")
-      {
-        continue;
-      }
-      
-      var name = sfc.types[i].name.split('_')[0];
-      var type_object = sfc.types[i];
+      var name = sfc.getName(sfc.type_objects[i]);
+      var type_object = sfc.type_objects[i];
 
       if(!(name in types))
       {
@@ -342,6 +360,8 @@ var sfc = {
 
     return types;
   },
+
+//==============================================================================
 
   /**
    * Gets a dictionary list of the options available for a type given a list of
@@ -370,9 +390,11 @@ var sfc = {
       // to work with and should move to the next child.
       if(option_name_array == null) { continue; }
 
-      if (_ui_filter.length == 0) {
+      if (_ui_filter.length == 0)
+      {
         option_name = sfc.extractNameUnfiltered(option_name_array);
-      } else
+      }
+      else
       {
         option_name = sfc.extractNameFiltered(option_name_array, _ui_filter);
       }
@@ -381,16 +403,16 @@ var sfc = {
       // options dictionary, loop again.
       if(option_name == null) { continue; }
 
-      if(!(option_name in options)) {
+      if(!(option_name in options))
+      {
         options[option_name] = _type_object.children[i];
       }
     }
 
-    console.log("sfc.getOptions - options:");
-    console.log(options);
-
     return options;
   },
+
+//==============================================================================
 
   /**
    * Given an index, gets the name of an option object inside of the type
@@ -421,12 +443,15 @@ var sfc = {
       );
       console.log(" ~ " + type_name + " " + option_name[0]);
       return null;
-    } else
+    }
+    else
     {
       option_name.shift();
       return option_name;
     }         
   },
+
+//==============================================================================
 
   /**
    * Gets name from name array.
@@ -443,9 +468,12 @@ var sfc = {
     var option_name;
     var filter_index = _option_name_array.indexOf('#');
 
-    if(filter_index != -1) {
+    if(filter_index != -1)
+    {
       option_name = _option_name_array.slice(0, filter_index).join(' ');
-    } else {
+    } 
+    else
+    {
       option_name = _option_name_array.join(' ');
     }
 
@@ -457,6 +485,8 @@ var sfc = {
 
     return option_name;
   },
+
+//==============================================================================
 
   /**
    * Gets name from name array.
@@ -505,7 +535,8 @@ var sfc = {
 
         if (option_name != null) { break; }
       }
-    } else
+    }
+    else
     {
       option_name = _option_name_array.join(' ');
     }
@@ -519,6 +550,8 @@ var sfc = {
 
     return option_name;
   },
+
+//==============================================================================
 
   /**
    * Get the filters available from the blend file.
@@ -569,8 +602,9 @@ var sfc = {
 var ui = {
 
   options_filter: [],
-
   animating: false,
+
+//==============================================================================
 
   /**
    * Populate the sketchfab customiser with the required elements for UI and 
@@ -623,6 +657,8 @@ var ui = {
     sketchfab_customizer.appendChild(api_iframe);
   },
 
+//==============================================================================
+
   /**
    * Loads the ui dynamically depending on the elements in the sketchfab view.
    */ 
@@ -632,8 +668,12 @@ var ui = {
     ui.loadFilterPanel();
   },
 
+//==============================================================================
+
   /**
-   * Loads the options panel dynamically
+   * Loads the options panel dynamically by first creating a button, setting its
+   * onclick method, appending it to the option_types_panel and then repeating
+   * for each element in sfc.types.
    * 
    * @returns 
    */
@@ -650,40 +690,25 @@ var ui = {
 
     var option_types_panel = document.getElementById('option-types-panel');
 
-    // The name of the css class that designates a button is selected
-    var selected_class = 'option-type-selected';
-
     for (let name of Object.keys(types)){
+
       var type_object = types[name];
-
-      console.log('ui.loadOptionsPanel - name = ' + name);
-      console.log('ui.loadOptionsPanel - type_object = ' + type_object.name);
-
       var new_button = ui.generateButton(name);  
+      
+      // I really havent found a good way to clean this up. Essentially, onclick
+      // is being assigned to an anonymous function that takes the arguments
+      // new_button and type_object on line 674. Those parameters are then
+      // passed as arguments to an anonymous function inside the first that is
+      // called on the first anonymous function's return. This approach has only
+      // been taken due to the scopes that the variables normally exist in when
+      // called by this asynchronous onclick method. There is probably a better
+      // way to achieve this.
       new_button.onclick = ((_button, _type_object) => 
       { 
         return function() 
         {
           ui.openChoicePanel(_type_object);
-          if (_button.classList.contains(selected_class))
-          {
-            _button.classList.remove(selected_class);
-          } else 
-          {
-            var buttonss = document.getElementsByClassName(selected_class);
-
-            // having to do this because getElementsByClassName returns a collection
-            // which isnt iterable with forEach
-
-            var buttons = Array.from(buttonss, button => button);
-
-            buttons.forEach( element =>
-            {
-              element.classList.remove(selected_class);
-            });
-
-            _button.classList.add(selected_class);
-          }
+          ui.setButtonSelected(_button);
         };
       })(new_button, type_object);
 
@@ -693,14 +718,16 @@ var ui = {
     option_types_panel.classList.add('option-types-panel-load-in');
   },
 
+//==============================================================================
+
   /**
    * Generates a button with a uniform style that conforms to the ui.
    * 
    * @param {string} _text 
    * @returns Button object
    */
-  generateButton: function(_text) {
-
+  generateButton: function(_text)
+  {
     // Create button itself
     var button = document.createElement('button');
     button.id = _text;
@@ -741,8 +768,192 @@ var ui = {
     return button;
   },    
 
+//==============================================================================
+
   /**
+   * Opens the panel for displying the options available for a type by applying
+   * classes for animation.
    * 
+   * @param {object} _type_object 
+   */
+  openChoicePanel: function(_type_object)
+  {
+    let hide_class = 'options-panel-hide';
+    let show_class = 'options-panel-show';
+    let shadowed_class = 'option-types-panel-shadowed';
+
+    let options_panel = document.getElementById('options-panel');
+    let option_types_panel = document.getElementById('option-types-panel');
+
+    /**
+    * Show options panel, populating it inbetween css animations.
+    */
+    function show_panel()
+    {
+      options_panel.classList.remove(hide_class);
+      // Populate the panel before it is visible again
+      ui.populateOptions(_type_object);
+      option_types_panel.classList.add(shadowed_class);
+      options_panel.classList.add(show_class);
+    }
+
+    /**
+    * Hide options panel using css animations.
+    */
+    function hide_panel()
+    {
+      options_panel.classList.remove(show_class);
+      option_types_panel.classList.remove(shadowed_class);
+      options_panel.classList.add(hide_class);
+    }
+
+    // Declaring values for readability 
+
+    let active_panel_not_set = sfc.active_object == null;
+    let new_type_selected = _type_object != sfc.active_object;
+    // let same_type_selected = _type_object == sfc.active_object;
+
+    /**
+    * Select new type based on its current state. The timeout is necessary, so
+    * that showing the panel happens only after hiding the panel has been 
+    * completed.
+    */
+    function select_new_type()
+    {
+      if(options_panel.classList.contains(show_class))
+      {
+        // This gets the milliseconds of the transition of the show_class css.
+        // This is then passed to the timeout function so that the timeout
+        // always executes only after the css transitions are finished.
+        const elem = document.querySelector('.' + show_class);
+        const duration = window.getComputedStyle(elem).transitionDuration;
+        const milli = parseFloat(duration.slice(0,duration.length)) * 1000;
+
+        hide_panel();
+        setTimeout(() => { show_panel();}, milli);
+      }
+      else if(options_panel.classList.contains(hide_class))
+      {
+        show_panel();
+      }
+    }
+
+    /**
+    * Select the same type, nothing fancy here, just hiding if shown and
+    * showing if hidden.
+    */
+    function select_same_type()
+    {
+      if(options_panel.classList.contains(show_class))
+      {
+        hide_panel()
+      }
+      else if(options_panel.classList.contains(hide_class))
+      {
+        show_panel();
+      }
+    }
+
+    // Show or hide panel based on whether user has selected a different type
+    // or the same type.
+    if (active_panel_not_set)
+    {
+      show_panel();
+    }
+    else if(new_type_selected)
+    {
+      select_new_type();
+    }
+    else
+    {
+      select_same_type();
+    }
+
+    // Set active object to current object selected.
+    sfc.active_object = _type_object;
+  },
+
+//==============================================================================
+
+  /**
+   * Populates options panel based on type selected.
+   * 
+   * @param {object} _type_object Type for which to display options.
+   */
+  populateOptions: function(_type_object)
+  {
+    let options_panel = document.getElementById('options-panel-content');
+    var options = sfc.getOptions(_type_object, ui.options_filter);
+
+    if (options == null)
+    {
+      console.log("ui.populatePanel: Error - Options list is empty.");
+    }
+    else
+    {
+      // Clear buttons so they can be repopulated.
+      options_panel.innerHTML = '';
+
+      for (let name of Object.keys(options))
+      {
+        var option_object = options[name];
+        
+        let option_button = ui.generateButton(name);
+
+        // Here the onclick anonymous function is applied the same as it is in
+        // ui.loadOptionsPanel(). This simply makes a call to sfc.showObject().
+        option_button.onclick = ((_option_object) => {
+          return function()
+          {
+            sfc.showObject(_type_object, _option_object);
+          }
+        })(option_object);
+
+        options_panel.appendChild(option_button);
+      }
+    }
+  },
+
+//==============================================================================
+
+  /**
+   * Sets or removes the 'button selected' css class for a button.
+   * 
+   * @param {object} _button 
+   */
+  setButtonSelected: function(_button)
+  {
+    // The name of the css class that designates a button is selected
+    var selected_class = 'option-type-selected';
+
+    if (_button.classList.contains(selected_class))
+    {
+      _button.classList.remove(selected_class);
+    }
+    else 
+    {
+      var button_collection = document.getElementsByClassName(selected_class);
+
+      // having to do this because getElementsByClassName returns a collection
+      // which isnt iterable with forEach. Mapping button from collection to 
+      // button in array.
+
+      var button_list = Array.from(button_collection, button => button);
+
+      button_list.forEach( element =>
+      {
+        element.classList.remove(selected_class);
+      });
+
+      _button.classList.add(selected_class);
+    }
+  },
+
+//==============================================================================
+
+  /**
+   * Loads filter panel by creating buttons for each element in the list of
+   * filter names received by sfc.getFilters().
    */
   loadFilterPanel: function() {
     var filters = sfc.getFilters();
@@ -751,7 +962,7 @@ var ui = {
     {
       let filter_button = ui.generateButton(filter_element);  
       filter_button.onclick = (event => {
-        ui.setFilter(event);
+        ui.updateFilter(event);
       });
 
       document.getElementById('filter-panel').appendChild(filter_button);
@@ -760,143 +971,62 @@ var ui = {
     document.getElementById('filter-panel').classList.add('filter-panel-load-in');
   },
 
-  /**
-   * 
-   * @param {object} _type_object 
-   */
-  openChoicePanel: function(_type_object) {
 
-    if (sfc.active_object == null) {
-      document.getElementById('options-panel').classList.remove('options-panel-hide');
-      ui.populatePanel(_type_object);
-      document.getElementById('option-types-panel').classList.add('option-types-panel-shadowed');
-      document.getElementById('options-panel').classList.add('options-panel-show');
-    }
-    else if(_type_object != sfc.active_object) {
 
-      if(document.getElementById('options-panel').classList.contains('options-panel-show'))
-      {
-        document.getElementById('options-panel').classList.remove('options-panel-show');
-        document.getElementById('option-types-panel').classList.remove('option-types-panel-shadowed');
-        document.getElementById('options-panel').classList.add('options-panel-hide');
-
-        setTimeout(() => { 
-          document.getElementById('options-panel').classList.remove('options-panel-hide');
-          ui.populatePanel(_type_object);
-          document.getElementById('option-types-panel').classList.add('option-types-panel-shadowed');
-          document.getElementById('options-panel').classList.add('options-panel-show');
-        }, 500);
-      } else if(document.getElementById('options-panel').classList.contains('options-panel-hide'))
-      {
-        document.getElementById('options-panel').classList.remove('options-panel-hide');
-        ui.populatePanel(_type_object);
-        document.getElementById('option-types-panel').classList.add('option-types-panel-shadowed');
-        document.getElementById('options-panel').classList.add('options-panel-show');
-      }
-
-    } else
-    {
-      if(document.getElementById('options-panel').classList.contains('options-panel-show'))
-      {
-        document.getElementById('options-panel').classList.remove('options-panel-show');
-        ui.populatePanel(_type_object);
-        document.getElementById('option-types-panel').classList.remove('option-types-panel-shadowed');
-        document.getElementById('options-panel').classList.add('options-panel-hide');
-      } else if(document.getElementById('options-panel').classList.contains('options-panel-hide'))
-      {
-        document.getElementById('options-panel').classList.remove('options-panel-hide');
-        ui.populatePanel(_type_object);
-        document.getElementById('option-types-panel').classList.add('option-types-panel-shadowed');
-        document.getElementById('options-panel').classList.add('options-panel-show');
-      }
-    }
-
-    sfc.active_object = _type_object;
-  },
+//==============================================================================
 
   /**
+   * Updates the filter used for displaying the elements in the options panel.
    * 
-   * @param {*} _type_object 
+   * @param {object} event Html event object that ran the updateFilter command, 
+   * i.e. the event fired from the button that was clicked.
    */
-  populatePanel: function(_type_object)
+  updateFilter: function(event)
   {
-    console.log('ui.populatePanel - active panel index is ' + _type_object.instanceID);
-
-    //var buttonsText = '';
-    var options = sfc.getOptions(_type_object, this.options_filter);
-
-    document.getElementById('options-panel-content').innerHTML = '';
-
-    if(options != null)
-    {
-      for(let i = 0; i < Object.keys(options).length; i++)
-      {
-        var name = Object.keys(options)[i];
-        var option_object = options[name];
-        
-        let button = new ui.generateButton(name);
-
-        button.onclick = ((_option_object) => {
-          return function() {
-            console.log('ui.populatePanel - button clicked');
-            sfc.showObject(_type_object, _option_object);
-          }
-        })(option_object);
-
-        document.getElementById('options-panel-content').appendChild(button);
-      }
-    } else {
-      console.log("ui.populatePanel: Error - Options list is empty.");
-    }
-  },
-
-  /**
-   * 
-   * @param {*} event 
-   */
-  setFilter: function(event)
-  {
+    let filter_on = 'filter-on';
     var filter_item = event.currentTarget;
+    let filter_option_set = filter_item.classList.contains(filter_on);
 
-    if(filter_item.classList.contains('filter-on'))
+    // If the filter option that was clicked is currently set, it needs to be
+    // removed from the filter, else it wasnt set and it should be added to 
+    // the filter array.
+    if(filter_option_set)
     {
-      filter_item.classList.remove('filter-on');
-      console.log("ui.setFilter - removed filter item id " + filter_item.id);
+      filter_item.classList.remove(filter_on);
 
-      var index = this.options_filter.indexOf(filter_item.id);
-
+      // If the filter option defined by the html id of the button clicked
+      // exists in the options_filter array, then remove it from the array.
+      var index = ui.options_filter.indexOf(filter_item.id);
       if(index != -1)
       {
         this.options_filter.splice(index, 1);
-        console.log("ui.setFilter - current_filter:");
-        console.log(this.options_filter);
       }
-
-    } else
+    }
+    else
     {
-      filter_item.classList.add('filter-on');
-      console.log("ui.setFilter - added filter item id " + filter_item.id);
+      filter_item.classList.add(filter_on);
 
+      // If the filter option doesnt exist, add it to the filter list.
       var index = this.options_filter.indexOf(filter_item.id);
-      
       if(index == -1)
       {
         this.options_filter.push(filter_item.id);
-        console.log("ui.setFilter - current_filter:");
-        console.log(this.options_filter);
       }
     }
 
-    console.log("ui.setFilter - active_panel = " + sfc.active_object.name);
-
+    // ui.populateOptions is run when the ui filter is updated so that the
+    // changes are reflected immediately without having to open/close the
+    // options panel again.
     if(sfc.active_object != null)
     {
-      console.log("ui.setFilter - active_panel non-null");
-      console.log(" ~ active_panel = " + sfc.active_object.name);
-      this.populatePanel(sfc.active_object);   
+      this.populateOptions(sfc.active_object);   
     }
   }
 };
+
+//==============================================================================
+// App start
+//==============================================================================
 
 ui.init();
 sfc.init( document.getElementById( SKETCHFAB_IFRAME_ID ) );
