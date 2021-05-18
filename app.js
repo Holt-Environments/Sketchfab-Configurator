@@ -228,7 +228,7 @@ var sfc = {
 
       // Because '#' is the designated name for the filter object, we dont want
       // to include this in our type list.
-      if (sfc.getName(element) != "#") {
+      if ((sfc.getName(element) != "#") && (sfc.getName(element) != ".scene")) {
         sfc.type_objects.push(element);
       }
     }
@@ -738,7 +738,7 @@ var ui = {
     // default value in the 'options-button' css class will be used.
     {
       let image = new Image();
-      let image_url = "imgs/" + _text + ".png";
+      let image_url = "imgs/" + _text + ".jpg";
       image.src = image_url;
       
       // Do this on load so that it is only evaluated after the image has
@@ -969,8 +969,6 @@ var ui = {
 
     document.getElementById('filter-panel').classList.add('filter-panel-load-in');
   },
-
-
 
 //==============================================================================
 
