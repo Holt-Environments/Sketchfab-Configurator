@@ -1,3 +1,3 @@
 # sketchfab-picker
 
-View picker [here](https://anthonymesa.github.io/Sketchfab-Configurator/).
+View picker [here](https://holt-environments.github.io/Sketchfab-Configurator/).
